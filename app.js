@@ -6,8 +6,10 @@ const bodyParser = require('body-parser')
 require('dotenv/config')
 
 const bodyParser = require('body-parser')
+const authRoute = require('./routes/auth')
 
 app.use(bodyParser.json())
+app.use('/api/user',authRoute)
 
 app.get('/', (req,res) =>{
     res.send('Homepage')
