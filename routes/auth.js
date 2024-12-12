@@ -1,14 +1,23 @@
+//import modules
 const express = require('express')
 const router = express.Router()
 
+//import the user model and the validations
 const User = require('../models/Users')
 const {registerValidation,loginValidation} = require('../validations/validation')
 
-const bcryptjs = require('bcryptjs')
-const jsonwebtoken = require('jsonwebtoken')
+const bcryptjs = require('bcryptjs') // for password hashing and comparison
+const jsonwebtoken = require('jsonwebtoken') // jsonwebtoken for tokens 
 
+//token
+const token = jsonwebtoken.sign(
+    { _id: User._id }, 
+    process.env.TOKEN_SECRET, 
+    { expiresIn: '1h' }      
+  );
+
+//user registration
 router.post('/register', async(req,res)=>{
-
     // Validation 1 to check user input
     const {error} = registerValidation(req.body)
     if(error){
@@ -21,7 +30,7 @@ router.post('/register', async(req,res)=>{
         return res.status(400).send({message:'User already exists'})
     }
 
-    // I created a hashed represenation of my password!
+    // hash the password before storing in database
     const salt = await bcryptjs.genSalt(5)
     const hashedPassword = await bcryptjs.hash(req.body.password,salt)
 
@@ -31,6 +40,7 @@ router.post('/register', async(req,res)=>{
         email:req.body.email,
         password:hashedPassword
     })
+    // save user in the database
     try{
         const savedUser = await user.save()
         res.send(savedUser)
@@ -40,6 +50,7 @@ router.post('/register', async(req,res)=>{
     
 })
 
+// user login
 router.post('/login', async(req,res)=>{
 
     // Validation 1 to check user input
@@ -66,4 +77,4 @@ router.post('/login', async(req,res)=>{
 
 })
 
-module.exports=router
+module.exports=router //export the router

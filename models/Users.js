@@ -1,5 +1,6 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose') //require mongoose library
 
+//schema for the users database
 const userSchema = mongoose.Schema({
     username:{
         type:String,
@@ -24,4 +25,4 @@ const userSchema = mongoose.Schema({
         default:Date.now
     }
 })
-module.exports=mongoose.model('users',userSchema)
+module.exports=mongoose.model('users',userSchema)//export the module for users
